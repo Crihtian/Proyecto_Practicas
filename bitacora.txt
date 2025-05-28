@@ -1,0 +1,49 @@
+Bitácora de desarrollo - Proyecto Laravel CRUD Estudiantes, Cursos y Matrículas
+
+15/05/2025 - 20/05/2025
+- Inicio del proyecto Laravel para gestión de estudiantes, cursos y matrículas.
+- Creación de modelos, migraciones y controladores para Student, Course y Enrollment.
+- Implementación de operaciones CRUD completas para las tres entidades.
+- Añadido soft delete, restore y force delete en controladores y vistas.
+- Creación de vistas index, deleted y formularios para cada entidad.
+- Corrección de nombres de campos en migraciones, modelos y validaciones (ej: finish_date/end_date, theorical_hours/theory_hours).
+- Ajuste de reglas de validación en StudentRequest y CoursesRequest.
+- Implementación de búsqueda simple global (input único) para estudiantes y cursos.
+- Implementación (comentada) de búsqueda avanzada por campo y valor en controladores.
+- Ejemplo de formulario Blade para alternar entre búsqueda simple y avanzada, con JavaScript para el toggle.
+- Se dejó el ejemplo de toggle de búsqueda como archivo comentado en resources/views/students/search-toggle-example.blade.php.
+- Se revirtió el uso de tabla base en app.blade.php y se mantuvo el marcado clásico de tabla en cada vista index.
+- Se aseguraron los $fillable y $casts en modelos para que coincidan con migraciones y formularios.
+- Todas las vistas muestran errores de validación y usan los nombres de campo correctos.
+
+21/05/2025
+- Se actualizó el método update en EnrollmentController para guardar archivos subidos con nombre único usando store('Archivos').
+- Se configuró el formulario Blade de matrícula para permitir la subida de archivos con enctype="multipart/form-data".
+
+22/05/2025
+- Se mejoró la gestión de archivos en matrículas: ahora el borrado físico solo ocurre en force delete y al eliminar archivos individuales.
+- Se añadió la exportación de comunicados PDF para todas las matrículas y para una matrícula individual, incluyendo datos de alumno y curso.
+- Se creó una plantilla personalizada para el PDF de comunicado de matrícula.
+- Se agregaron enlaces en el listado de matrículas para descargar el PDF global y el PDF individual de cada alumno.
+- Se documentó y revisó el código para el manejo de relaciones y la obtención de datos de otras tablas (students, courses) en la exportación.
+
+23/05/2025
+- Se implementó el envío masivo de correos a alumnos matriculados con un ZIP adjunto que contiene el comunicado PDF y los archivos de matrícula.
+- Se creó/ajustó el comando Artisan para recorrer todos los estudiantes, comprobar si están matriculados, generar el ZIP si no existe y enviar el correo con el adjunto.
+- Se corrigió el Mailable Matricula_Alumno para aceptar los datos necesarios y adjuntar el ZIP correctamente.
+- Se corrigió la referencia a la vista de correo para usar 'emails.matricula' y evitar errores de hint path.
+- Se mejoró la validación de DNI/NIE en StudentRequest usando after() y una expresión regular combinada.
+- Se mejoró el aspecto visual de las tablas index de estudiantes, cursos y matrículas (Bootstrap, centrado, badges, emojis).
+- Se documentó el proceso y se verificó la integración de todos los apartados relacionados con la matrícula y el envío de emails.
+
+26/05/2025
+- Se implementó sistema de autenticación de dos factores (2FA).
+- Se corrigió la estructura de directorios para archivos de matrícula y temporales:
+  * /storage/app/private/archivos/ para documentos de matrícula
+  * Archivos ZIP se crean directamente en /storage/app/private/
+- Se optimizó el manejo de archivos temporales y su limpieza después del envío.
+- Se corrigió la lógica de verificación TWO_FACTOR_AUTH_ENABLED en AuthenticatedSessionController.
+- Se simplificó la redirección post-login a la página principal.
+- Se implementaron las vistas necesarias para el proceso de verificación 2FA.
+
+Este archivo se irá actualizando con los cambios y avances relevantes del proyecto.

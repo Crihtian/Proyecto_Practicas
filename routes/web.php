@@ -1,0 +1,60 @@
+<?php
+
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TwoFactorController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'twofactor'])->name('dashboard');
+
+// Rutas para la verificación 2FA - solo requieren estar autenticado
+Route::middleware(['auth'])->group(function () {
+    Route::get('verify/resend', [TwoFactorController::class, 'resend'])->name('verify.resend');
+    Route::resource('verify', TwoFactorController::class)->only(['index', 'store']);
+});
+
+// Rutas protegidas que requieren autenticación y 2FA
+Route::middleware(['auth', 'twofactor'])->group(function () {
+    // Rutas de Estudiantes
+    Route::get('/students/deleted', [StudentController::class, 'deleted'])->name('students.deleted');
+    Route::post('/students/restore/{id}', [StudentController::class, 'restore'])->name('students.restore');
+    Route::delete('/students/force-delete/{id}', [StudentController::class, 'force_delete'])->name('students.force_delete');
+    Route::get('/students/pdf', [StudentController::class, 'exportPDF'])->name('students.export_pdf');
+    Route::get('/students/import', [StudentController::class, 'addImport'])->name('students.import');
+    Route::post('/students/import', [StudentController::class, 'import'])->name('students.import');
+    Route::get('/students/export', [StudentController::class, 'exportXML'])->name('students.export_xml');
+    Route::resource('students', StudentController::class);
+
+    // Rutas de Cursos
+    Route::get('/courses/deleted', [CourseController::class, 'deleted'])->name('courses.deleted');
+    Route::post('/courses/restore/{id}', [CourseController::class, 'restore'])->name('courses.restore');
+    Route::delete('/courses/force-delete/{id}', [CourseController::class, 'force_delete'])->name('courses.force_delete');
+    Route::resource('courses', CourseController::class);
+
+    // Rutas de Matrículas
+    Route::get('/enrollments/deleted', [EnrollmentController::class, 'deleted'])->name('enrollments.deleted');
+    Route::post('/enrollments/restore/{id}', [EnrollmentController::class, 'restore'])->name('enrollments.restore');
+    Route::delete('/enrollments/force-delete/{id}', [EnrollmentController::class, 'force_delete'])->name('enrollments.force_delete');
+    Route::post('/enrollments/{id}/delete-file/{file}', [EnrollmentController::class, 'deleteFile'])->name('enrollments.delete_file');
+    Route::get('/enrollments/{id}/download/{file}', [EnrollmentController::class, 'download'])->name('enrollments.download');
+    Route::get('/enrollments/export/pdf', [EnrollmentController::class, 'exportPDF'])->name('enrollments.export.pdf');
+    Route::get('/enrollments/{id}/preview/{file}', [EnrollmentController::class, 'preview'])->name('enrollments.preview');
+    Route::get('/enrollments/{id}/export/pdf', [EnrollmentController::class, 'exportSinglePDF'])->name('enrollments.export.pdf.single');
+    Route::get('/enrollments/{id}/export/zip', [EnrollmentController::class, 'exportEnrollmentFilesZip'])->name('enrollments.export.zip');
+    Route::resource('enrollments', EnrollmentController::class);
+
+    // Rutas de perfil de usuario
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';

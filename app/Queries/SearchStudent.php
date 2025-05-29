@@ -4,19 +4,20 @@ namespace App\Queries;
 
 use App\Models\Student;
 
+
 class SearchStudent
 {
     /**
      * Aplica el scope de búsqueda global a los estudiantes.
-     * @param string|null $q
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param string|null $term
+     * @param array  $filters
+     * @return \Illuminate\Support\Collection
      */
-    public function search($q)
+    public static function apply(?string $term, array $filters)
     {
-        return Student::search($q)->get();
-    }
-    public function filter(array $filters)
-    {
-       return Student::filter($filters)->get();
+        return Student::query()
+                ->search($term)
+                ->filter($filters)
+                ->get();
     }
 }

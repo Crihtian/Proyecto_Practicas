@@ -17,12 +17,21 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        new SearchStudent();
-        $q = $request->input('q');
-        $students = Student::search($q)->get();
+        $term = $request->input('term');
 
-        $filters = $request->only(['name', 'lastname', 'idcard', 'email', 'birthday', 'disability']);
-        $students = Student::filter($filters)->get();
+        $filters = $request->only([
+            'name',
+            'lastname',
+            'idcard',
+            'email',
+            'birthday' ,
+            'disability',
+            'address'
+        ]);
+
+        $students = SearchStudent::apply($term, $filters);
+
+        return view("students.index", compact('students'));
     }
 
     /**

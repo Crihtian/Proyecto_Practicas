@@ -2,13 +2,7 @@
 
 @section('content')
 {{-- Formulario de búsqueda simple/avanzada --}}
-@include('search-forms', ['entity' => 'students', 'fields' => [
-    ['value' => 'name', 'label' => 'Nombre'],
-    ['value' => 'lastname', 'label' => 'Apellidos'],
-    ['value' => 'idcard', 'label' => 'DNI/NIE'],
-
-
-]])
+@include('search-forms')
 
 {{-- Mensaje de éxito --}}
 

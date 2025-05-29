@@ -4,13 +4,7 @@
 
 @section('content')
 
-@include('search-forms', ['entity' => 'enrollments', 'fields' => [
-    ['value' => 'student_id', 'label' => 'Id Alumno'],
-    ['value' => 'student_name', 'label' => 'Nombre Alumno'],
-    ['value' => 'course_name', 'label' => 'Nombre Curso'],
-    ['value' => 'course_id', 'label' => 'Id Curso'],
-    ['value' => 'enrollment_date', 'label' => 'Fecha Matriculación'],
-]])
+
 
 
 <div class="d-flex justify-content-between align-items-center mb-4">

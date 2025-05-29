@@ -2,13 +2,9 @@
 
 @section('content')
 
-@include('search-forms', ['entity' => 'courses', 'fields' => [
-    ['value' => 'name', 'label' => 'Nombre del curso'],
-    ['value' => 'start_date', 'label' => 'Fecha Inicio'],
-    ['value' => 'finish_date', 'label' => 'Fecha Fin'],
-    ['value' => 'specialty_code', 'label' => 'Código Especialidad'],
-    ['value' => 'active', 'label' => 'Activo'],
-]])
+
+
+
 <h1>Listado de cursos</h1>
 <table class="table table-striped table-hover table-bordered align-middle shadow-sm rounded" style="background-color: #fff; border-radius: 12px; overflow: hidden;">
     <thead class="table-primary">

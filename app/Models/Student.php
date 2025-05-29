@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -29,43 +28,43 @@ class Student extends Model
         'disability' => 'boolean',
     ];
 
-    #[Scope]
-    public function Search($query, $q)
-{
-    if (!$q) return $query;
 
-    $q = "%$q%";
+    public function scopeSearch($query, $term)
+    {
+        if (!$term) return $query;
 
-    return $query->when($q, function ($query, $q) {
-        $query->where(function ($query) use ($q) {
-            $query->where('name', 'like', "%$q%")
-                  ->orWhere('lastname', 'like', "%$q%")
-                  ->orWhere('idcard', 'like', "%$q%")
-                  ->orWhere('address', 'like', "%$q%")
-                  ->orWhere('birthday', 'like', "%$q%")
-                  ->orWhere('disability', 'like', "%$q%");
+        $term = "%$term%";
+
+        return $query->where(function($q)use ($term) {
+                $q->where('name', 'like', $term)
+                  ->orWhere('lastname', 'like', $term)
+                  ->orWhere('idcard', 'like', $term)
+                  ->orWhere('address', 'like', $term)
+                  ->orWhere('birthday', 'like', $term)
+                  ->orWhere('disability', 'like', $term);
         });
-    });
-}
 
-#[Scope]
-    public function Filter($query,$filters)
-{
- return $query->when($filters['name'] ?? false, function ($query, $name) {
-        $query->where('name', 'like', "%$name%");
-    })->when($filters['lastname'] ?? false, function ($query, $lastname) {
-        $query->where('lastname', 'like', "%$lastname%");
-    })->when($filters['idcard'] ?? false, function ($query, $idcard) {
-        $query->where('idcard', 'like', "%$idcard%");
-    })->when($filters['email'] ?? false, function ($query, $email) {
-        $query->where('email', 'like', "%$email%");
-    })->when($filters['birthday'] ?? false, function ($query, $birthday) {
-        $query->whereDate('birthday', $birthday);
-    })->when($filters['disability'] ?? null, function ($query, $disability) {
-        $query->where('disability', $disability);
-    });
+    }
 
-}
+
+   public function scopeFilter($query, $filters)
+    {
+    return $query->when($filters['name'] ?? false, fn($q, $name) =>
+            $q->where('name', 'like', "%$name%"))
+        ->when($filters['lastname'] ?? false, fn($q, $lastname) =>
+            $q->where('lastname', 'like', "%$lastname%"))
+        ->when($filters['idcard'] ?? false, fn($q, $idcard) =>
+            $q->where('idcard', $idcard))
+        ->when($filters['email'] ?? false, fn($q, $email) =>
+            $q->where('email', 'like', "%$email%"))
+         ->when(array_key_exists('disability', $filters), fn($q) =>
+            $q->where('disability', $filters['disability']))
+        ->when($filters['birthday'] ?? false, fn($q, $birthday) =>
+            $q->whereDate('birthday', $birthday))
+        ->when($filters['address'] ?? false, fn($q, $address) =>
+            $q->where('address', 'like', "%$address%"));
+    }
+
 
 }
 
